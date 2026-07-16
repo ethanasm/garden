@@ -1,8 +1,9 @@
 ---
-title: Digital Garden
+title: Ethan's Digital Garden
 ---
 
-Nothing has been published here yet.
+Welcome. This is the public, curated subset of my private notes — ideas worth
+sharing get promoted here once they've earned it.
 
-This site is generated from the `public/` folder of a private vault. Notes
-promoted there will appear on the next sync.
+It's a garden, not a blog: notes grow over time, get pruned, and are allowed
+to be unfinished.
