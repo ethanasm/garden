@@ -107,12 +107,12 @@ a single separator character in the TypeScript key builder reddens 30 vectors.
 
 It runs in both of my projects, and the second one is the interesting case.
 
-**[vacation-price-tracker](https://github.com/ethanasm/vacation-price-tracker)**
-is where it came from. Its quota module is now a thin adapter — same public
+**[[building-vacation-price-tracker|vacation-price-tracker]]** is where it came
+from. Its quota module is now a thin adapter — same public
 functions, same fail-open behaviour, same log events — with the Lua and the key
 scheme deleted from the application and imported instead.
 
-**[showbook](https://github.com/ethanasm/showbook)** never had this layer. It had
+**[[building-showbook|showbook]]** never had this layer. It had
 per-user LLM *call* counts in a plain in-process `Map` and no spend ceiling at
 all. Two things were wrong with that. The counter reset on every deploy, so a
 redeploy handed every user a fresh day's allowance. And counting calls doesn't
