@@ -1,5 +1,7 @@
 # garden
 
+**→ [ethanasm.github.io/garden](https://ethanasm.github.io/garden)**
+
 My public digital garden — a [Quartz v4](https://github.com/jackyzha0/quartz)
 site deployed to GitHub Pages on every push to `main`
 (`.github/workflows/deploy.yml`).
