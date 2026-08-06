@@ -1,5 +1,5 @@
 ---
-title: Building Showbook
+title: Showbook
 date: 2026-08-06
 description: A personal tracker for live shows, and the setlist-prediction engine underneath it.
 tags:
@@ -8,15 +8,15 @@ tags:
   - machine-learning
 ---
 
-# Building Showbook
+# Showbook
 
-**[Showbook](https://github.com/ethanasm/showbook)** keeps track of live
-entertainment: concerts, theatre, comedy, festivals. It remembers the shows I've
-been to, watches for ones I'd want to know about, and for upcoming concerts it
-tries to tell me what the artist is going to play.
+A personal tracker for live entertainment: concerts, theatre, comedy, festivals.
+It remembers the shows I've been to, watches for ones I'd want to know about, and
+for upcoming concerts it tries to tell me what the artist is going to play. It's
+self-hosted on a machine at home, with a web app and a native mobile app, both
+feature-complete and both in daily use by an audience of roughly one.
 
-It's self-hosted on a machine at home. There's a web app and a native mobile
-app, both feature-complete, both in daily use by an audience of roughly one.
+- Source: [github.com/ethanasm/showbook](https://github.com/ethanasm/showbook)
 
 ## How it came about
 
@@ -230,9 +230,9 @@ hand from a spec and adjusted against back-tests. That's defensible at this data
 volume, and it's also the obvious place a real model would beat it.
 
 Two pieces have since been pulled out into standalone open-source libraries.
-[[mcp-budget-governor]], which puts a dollar ceiling on LLM and tool calls, now
+[[mcp-budget-governor|MCP Budget Governor]], which puts a dollar ceiling on LLM and tool calls, now
 runs the money tier of Showbook's guardrails: before it, the per-user LLM quota
 lived in a process-local map, so every redeploy quietly handed everyone a fresh
 day's allowance, and there was no spend ceiling at all. The other,
 [provider-router](https://github.com/ethanasm/provider-router), came out of the
-sibling project: [[building-vacation-price-tracker]].
+sibling project: [[building-vacation-price-tracker|Vacation Price Tracker]].

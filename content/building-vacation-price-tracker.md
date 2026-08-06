@@ -1,5 +1,5 @@
 ---
-title: Building Vacation Price Tracker
+title: Vacation Price Tracker
 date: 2026-08-06
 description: The Google Flights price graph I wanted, tracking specific options rather than the market minimum.
 tags:
@@ -8,15 +8,15 @@ tags:
   - distributed-systems
 ---
 
-# Building Vacation Price Tracker
+# Vacation Price Tracker
 
-**[Vacation Price Tracker](https://github.com/ethanasm/vacation-price-tracker)**
-watches the price of one specific trip: these airports, these dates, this hotel
-city, and tells you when the total drops below a number you set. You can also
+A price tracker for one specific trip: these airports, these dates, this hotel
+city. It tells you when the total drops below a number you set, and you can also
 just talk to it, since there's a chat interface that creates and manages trips
-through tool calls.
+through tool calls. Web app, native mobile app, and a backend that wakes up daily
+to go and check.
 
-Web app, native mobile app, and a backend that wakes up daily to go and check.
+- Source: [github.com/ethanasm/vacation-price-tracker](https://github.com/ethanasm/vacation-price-tracker)
 
 ## How it came about
 
@@ -169,7 +169,7 @@ agentic loop is a great many calls very quickly. So there are always-on ceilings
 per-user daily quotas plus a global daily spend circuit breaker, backed by atomic
 Redis counters that reset at UTC midnight.
 
-That's now its own open-source library, [[mcp-budget-governor]], and this app is
+That's now its own open-source library, [[mcp-budget-governor|MCP Budget Governor]], and this app is
 where it came from. Extracting it turned up a production bug that had been
 invisible while it sat inside the app. A user at their chat quota was draining the overall API quota on
 rejected retries, because rejections were being metered as usage. Pulling a
@@ -193,4 +193,4 @@ one you assumed.
 reason I can swap a data provider at runtime without much anxiety.
 
 The sibling project, and the one with the harder algorithm in it:
-[[building-showbook]].
+[[building-showbook|Showbook]].

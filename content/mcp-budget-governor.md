@@ -1,5 +1,5 @@
 ---
-title: mcp-budget-governor
+title: MCP Budget Governor
 date: 2026-08-06
 tags:
   - mcp
@@ -8,7 +8,7 @@ tags:
 description: A library for putting a dollar ceiling on MCP tool calls — where it came from, and what adopting it taught me.
 ---
 
-# mcp-budget-governor
+# MCP Budget Governor
 
 A small library that puts spending limits on [MCP](https://modelcontextprotocol.io)
 servers: per-user quotas, per-tool limits, and a global circuit breaker, counted
@@ -107,12 +107,12 @@ a single separator character in the TypeScript key builder reddens 30 vectors.
 
 It runs in both of my projects, and the second one is the interesting case.
 
-**[[building-vacation-price-tracker|vacation-price-tracker]]** is where it came
+**[[building-vacation-price-tracker|Vacation Price Tracker]]** is where it came
 from. Its quota module is now a thin adapter — same public
 functions, same fail-open behaviour, same log events — with the Lua and the key
 scheme deleted from the application and imported instead.
 
-**[[building-showbook|showbook]]** never had this layer. It had
+**[[building-showbook|Showbook]]** never had this layer. It had
 per-user LLM *call* counts in a plain in-process `Map` and no spend ceiling at
 all. Two things were wrong with that. The counter reset on every deploy, so a
 redeploy handed every user a fresh day's allowance. And counting calls doesn't
