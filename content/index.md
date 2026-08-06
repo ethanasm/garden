@@ -17,6 +17,9 @@ that were interesting to solve.
   engine underneath it.
 - [[building-vacation-price-tracker|Vacation Price Tracker]]. Flight and hotel price tracking for one
   specific trip, and the problem of following a single flight through time.
+- [[building-mcp-review|MCP Review]]. Commit-level code review without a pull
+  request, built as an MCP host whose model gathers the project context it needs
+  before writing a finding.
 - [[building-mcp-budget-governor|MCP Budget Governor]]. Putting a dollar ceiling on MCP tool calls: why the
   counters have to be atomic, why two language packages share one budget rather
   than merely resembling each other, and what adopting a library in two real
