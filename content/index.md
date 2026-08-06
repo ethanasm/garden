@@ -8,6 +8,16 @@ sharing get promoted here once they've earned it.
 It's a garden, not a blog: notes grow over time, get pruned, and are allowed
 to be unfinished.
 
+## Projects
+
+Write-ups of things I've built: what they are, why they exist, and the parts
+that were interesting to solve.
+
+- [[building-showbook]]. A personal live-show tracker, and the setlist-prediction
+  engine underneath it.
+- [[building-vacation-price-tracker]]. Flight and hotel price tracking for one
+  specific trip, and the problem of following a single flight through time.
+
 ## Notes
 
 - [[mcp-budget-governor]] — putting a dollar ceiling on MCP tool calls: why the
