@@ -1,0 +1,153 @@
+---
+title: mcp-budget-governor
+date: 2026-08-06
+tags:
+  - mcp
+  - infrastructure
+  - open-source
+description: A library for putting a dollar ceiling on MCP tool calls — where it came from, and what adopting it taught me.
+---
+
+# mcp-budget-governor
+
+A small library that puts spending limits on [MCP](https://modelcontextprotocol.io)
+servers: per-user quotas, per-tool limits, and a global circuit breaker, counted
+in **dollars rather than calls**.
+
+- Source: [github.com/ethanasm/mcp-budget-governor](https://github.com/ethanasm/mcp-budget-governor)
+- [PyPI](https://pypi.org/project/mcp-budget-governor/) · [npm](https://www.npmjs.com/package/mcp-budget-governor) — same name, both registries
+
+## Where it came from
+
+I didn't set out to write a library. I had a flight-price tracker with an LLM
+chat backend, and the thing that kept me up was not a bug — it was the invoice.
+
+The failure mode a spending bug has is that it is **silent**. A leaked session or
+a runaway refresh loop doesn't crash anything and doesn't page anyone. It just
+spends, at machine speed, until the bill arrives weeks later. And a per-user
+quota can't catch it, because the spend spreads across users and no single one of
+them looks abnormal. Only a global ceiling does.
+
+So that app grew a cost-control layer: daily per-user quotas, a global token
+budget, a circuit breaker, all in Redis counters that reset themselves at UTC
+midnight. It worked. It was also four hardcoded settings fields welded to one
+application, and I'd want the same thing in the next project.
+
+The extraction was mostly a generalisation: arbitrary declarative limits instead
+of fixed fields, cost units instead of raw token counts, and a per-limit answer
+to a question the original had waved away — *what should happen when Redis is
+unreachable?* The original failed open everywhere, which is a reasonable trade
+for a per-user quota and a bad one for a spend breaker. Now each limit decides,
+because those two limits are protecting different things: one guards a user's
+fair share, the other guards your bank account.
+
+**The extraction found a real bug in the original.** Rewriting the logic as a
+general policy walk made obvious something that had been sitting in production
+unnoticed: limits were evaluated in order and the function returned on the first
+rejection — but a call rejected by a *later* limit had already been charged to
+every *earlier* one. A user sitting at their chat cap was draining their overall
+daily API quota on retries that never ran, locking themselves out of everything
+until midnight. It had never fired because the app only had two ceilings that
+rarely both applied. Rewriting a thing in a different shape is a good way to see
+what you couldn't see in the original shape.
+
+## Why the counters are Lua, not Python
+
+The interesting technical constraint is that the obvious implementation is
+wrong under concurrency.
+
+"Read the counter, compare it to the cap, increment it" is three round trips with
+two gaps in the middle. Under load, N callers all read the same under-cap value
+and all increment past it. That isn't drift, it's the absence of enforcement.
+Both mutating operations are therefore single Lua scripts, which Redis runs to
+completion without interleaving another client's commands.
+
+I measured it rather than asserting it. The same governor over a naive
+`GET`/`INCRBY` backend admitted **all 500** concurrent calls against a cap of 50.
+The atomic one admits exactly 50. The overhead for that is about 272µs per gated
+limit against loopback Redis — roughly one round trip, which is what it should be.
+
+The other design idea worth stealing: **every key ends in a UTC time bucket and
+carries a TTL to the end of it.** Nothing ever resets a counter. Tomorrow is
+simply a different key, and yesterday's expires on its own. No cron, no reset
+job, and two servers computing a bucket for the same instant produce the same
+string — so they share a counter by construction rather than by coordination.
+
+That detail turned out to matter far more than I expected. It's what made a
+Postgres backend possible later, since a new window is a new row: expiry becomes
+garbage collection rather than correctness.
+
+## Two languages, one budget
+
+Most MCP servers are TypeScript. Mine was Python. So there are two packages —
+and the point isn't parity.
+
+**A Node server and a Python worker pointed at the same Redis enforce one
+budget.** They're two clients of a single enforcement layer, not two libraries
+that happen to behave alike.
+
+Holding that claim up needs more than each package passing its own tests. Two
+implementations that are each perfectly self-consistent and write to *different
+keys* would both be green, and would still fail to share a budget. So:
+
+- The Lua is authored in one place and copied into both packages. There's no
+  translation to drift, because there's no translation.
+- Conformance vectors — keys, TTLs, buckets, USD conversions, prices, script
+  digests — are generated by one implementation and asserted by the other. A
+  hand-written fixture would only prove each side agrees with whoever wrote the
+  fixture, which is the same person who wrote both, and therefore proves nothing.
+- A test drives one live Redis from **both languages at once**, checking that a
+  charge written by Python is visible to TypeScript and that one cap is enforced
+  across the two.
+
+I also checked that this suite can *fail*, which is the part people skip. Changing
+a single separator character in the TypeScript key builder reddens 30 vectors.
+
+## How it's actually used
+
+It runs in both of my projects, and the second one is the interesting case.
+
+**[vacation-price-tracker](https://github.com/ethanasm/vacation-price-tracker)**
+is where it came from. Its quota module is now a thin adapter — same public
+functions, same fail-open behaviour, same log events — with the Lua and the key
+scheme deleted from the application and imported instead.
+
+**[showbook](https://github.com/ethanasm/showbook)** never had this layer. It had
+per-user LLM *call* counts in a plain in-process `Map` and no spend ceiling at
+all. Two things were wrong with that. The counter reset on every deploy, so a
+redeploy handed every user a fresh day's allowance. And counting calls doesn't
+bound a bill: N users times their allowance was unbounded from my wallet, while
+the observability stack dutifully recorded token usage that nothing ever read
+back.
+
+## What adoption taught me that testing didn't
+
+The library was at 98% coverage before either app used it. Everything below came
+from installing it somewhere, and none of it was reachable from its own test
+suite.
+
+**Showbook has no Redis.** My plan had confidently said in-process counters were
+fine there since it's a single process — but the failure that mattered wasn't
+distribution, it was *durability*. That's why there's a Postgres backend now: one
+table, three functions mirroring the Lua operation for operation, atomicity from
+row locks instead of a script. It was only viable because of the UTC-bucket key
+scheme.
+
+**The first install failed three times**, and each fix appeared to uncover a new
+problem — which is the signature of a misdiagnosis, not of three bugs. The real
+cause was that the package manager *silently ignored* the subdirectory selector
+in my dependency spec under one resolution path and honoured it under another, so
+the two failure modes were mutually exclusive and each fix exposed the other. An
+error would have cost one round instead of three.
+
+**And I kept "verifying" fixes that didn't work.** Deleting `node_modules` is not
+a cold install — the package manager's content-addressable store survives it, and
+it was quietly serving a correct copy cached from an earlier resolution. Only a
+pristine clone with a fresh store directory reproduced CI. I now treat that as the
+rule: for a dependency change, the cold install *is* the test; anything less is
+measuring the cache.
+
+The general lesson is unglamorous and I'd rather have learned it here than later:
+**a library isn't done when its tests pass, it's done when something else
+installs it.** Coverage measures the code you wrote against the assumptions you
+had. A consumer brings different assumptions, and those are the ones that break.
