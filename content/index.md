@@ -17,7 +17,7 @@ that were interesting to solve.
   engine underneath it.
 - [[building-vacation-price-tracker|Vacation Price Tracker]]. Flight and hotel price tracking for one
   specific trip, and the problem of following a single flight through time.
-- [[mcp-budget-governor|MCP Budget Governor]]. Putting a dollar ceiling on MCP tool calls: why the
+- [[building-mcp-budget-governor|MCP Budget Governor]]. Putting a dollar ceiling on MCP tool calls: why the
   counters have to be atomic, why two language packages share one budget rather
   than merely resembling each other, and what adopting a library in two real
   projects taught me that 98% coverage didn't. Extracted from the two apps above.

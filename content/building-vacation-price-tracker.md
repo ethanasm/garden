@@ -169,7 +169,7 @@ agentic loop is a great many calls very quickly. So there are always-on ceilings
 per-user daily quotas plus a global daily spend circuit breaker, backed by atomic
 Redis counters that reset at UTC midnight.
 
-That's now its own open-source library, [[mcp-budget-governor|MCP Budget Governor]], and this app is
+That's now its own open-source library, [[building-mcp-budget-governor|MCP Budget Governor]], and this app is
 where it came from. Extracting it turned up a production bug that had been
 invisible while it sat inside the app. A user at their chat quota was draining the overall API quota on
 rejected retries, because rejections were being metered as usage. Pulling a

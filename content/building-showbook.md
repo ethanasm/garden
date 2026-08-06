@@ -230,7 +230,7 @@ hand from a spec and adjusted against back-tests. That's defensible at this data
 volume, and it's also the obvious place a real model would beat it.
 
 Two pieces have since been pulled out into standalone open-source libraries.
-[[mcp-budget-governor|MCP Budget Governor]], which puts a dollar ceiling on LLM and tool calls, now
+[[building-mcp-budget-governor|MCP Budget Governor]], which puts a dollar ceiling on LLM and tool calls, now
 runs the money tier of Showbook's guardrails: before it, the per-user LLM quota
 lived in a process-local map, so every redeploy quietly handed everyone a fresh
 day's allowance, and there was no spend ceiling at all. The other,
