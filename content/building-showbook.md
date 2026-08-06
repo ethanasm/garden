@@ -234,5 +234,9 @@ Two pieces have since been pulled out into standalone open-source libraries.
 runs the money tier of Showbook's guardrails: before it, the per-user LLM quota
 lived in a process-local map, so every redeploy quietly handed everyone a fresh
 day's allowance, and there was no spend ceiling at all. The other,
-[provider-router](https://github.com/ethanasm/provider-router), came out of the
-sibling project: [[building-vacation-price-tracker|Vacation Price Tracker]].
+[[building-provider-router|Provider Router]], came out of the sibling project,
+[[building-vacation-price-tracker|Vacation Price Tracker]], and now backs
+Showbook's venue geocoding: the Google Places → Nominatim fallback, the
+one-call-per-second politeness OSM's usage policy requires, and the fact that a
+Nominatim answer is *thinner* than a Google one all live in the library rather
+than in hand-rolled control flow.

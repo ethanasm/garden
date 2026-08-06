@@ -24,3 +24,8 @@ that were interesting to solve.
   counters have to be atomic, why two language packages share one budget rather
   than merely resembling each other, and what adopting a library in two real
   projects taught me that 98% coverage didn't. Extracted from the two apps above.
+- [[building-provider-router|Provider Router]]. Calling one capability through several
+  interchangeable providers: why ordered failover is the easy half, why "the call
+  returned 200" is not "the provider answered well", and what building the same
+  contract in two languages caught within an hour. Also extracted from the two
+  apps above.

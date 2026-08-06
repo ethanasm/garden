@@ -127,8 +127,10 @@ adapter, and to go read the provider's own schema. I made that same mistake thre
 times before writing it down.
 
 The routing layer has since been extracted into a standalone library,
-[provider-router](https://github.com/ethanasm/provider-router), which does
-ordered failover across interchangeable providers with normalised output.
+[[building-provider-router|Provider Router]], which does ordered failover across
+interchangeable providers with normalised output — and the tracker now routes
+through it, so a Skiplagged 429 moves to Kiwi automatically instead of waiting
+for me to notice and flip a setting.
 
 ## Durable workflows, and failing halfway
 
