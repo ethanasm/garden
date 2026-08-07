@@ -177,6 +177,6 @@ That app's provider failover later became
 
 [[building-showbook|Showbook]] produced a different kind of agent tool: its
 production queue-health heuristics became
-[mcp-queue-doctor](https://github.com/ethanasm/mcp-queue-doctor), an MCP server
-that explains retry storms, stuck jobs, and missed schedules instead of merely
-listing queue rows.
+[[building-mcp-queue-doctor|MCP Queue Doctor]], an MCP server that explains
+retry storms, stuck jobs, and missed schedules instead of merely listing queue
+rows.

@@ -29,3 +29,8 @@ that were interesting to solve.
   returned 200" is not "the provider answered well", and what building the same
   contract in two languages caught within an hour. Also extracted from the two
   apps above.
+- [[building-mcp-queue-doctor|MCP Queue Doctor]]. An MCP server that diagnoses
+  Postgres job queues instead of listing their rows: schema knowledge kept as
+  data and matched on shape, honest silence when a backend can't answer, and
+  reaching production databases you can't connect to. Extracted from Showbook's
+  morning health check.

@@ -209,7 +209,10 @@ live.
 covering failed jobs, missed schedules, error volume, queue depth, data
 freshness, external APIs and CI, then emails a summary. Unglamorous, and the
 reason I found out about a dead vision model from an email instead of eventually
-noticing that festival posters had quietly stopped returning any artists.
+noticing that festival posters had quietly stopped returning any artists. The
+queue-health heuristics have since been extracted into
+[[building-mcp-queue-doctor|MCP Queue Doctor]], an MCP server any agent can
+point at a pg-boss or graphile-worker database.
 
 ## Honest notes
 
