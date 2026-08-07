@@ -128,7 +128,7 @@ times before writing it down.
 
 The routing layer has since been extracted into a standalone library,
 [[building-provider-router|Provider Router]], which does ordered failover across
-interchangeable providers with normalised output — and the tracker now routes
+interchangeable providers with normalised output. The tracker now routes
 through it, so a Skiplagged 429 moves to Kiwi automatically instead of waiting
 for me to notice and flip a setting.
 
